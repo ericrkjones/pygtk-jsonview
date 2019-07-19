@@ -19,11 +19,14 @@ class MainWindow(Gtk.Window):
 		self.jsonview = JSONView(data, headers = headers)
 		self.pane.add(self.jsonview.View)
 		self.pane.add(self.jsonview.Filter)
+		self.pane.set_position(400)		
 		self.add(self.pane)
 
 #data = loadJSONData(jsonfile)
-headers= {"name": {"name": "Player Name", "type": str}, "class": {"name": "PC Class", "type": str}}
-data = [{"name": "Eric", "class": "Wizard"}, {"name": "Winry", "class": "Dog"}]
+# headers= {"name": {"name": "Player Name", "type": str}, "class": {"name": "PC Class", "type": str}}
+headers = None
+data = [{"name": "Eric", "class": ["Wizard"], "eatspoop": False}, {"name": "Winry", "class": ["Dog", "Seal"], "eatspoop": True}]
+
 window = MainWindow()
 window.show_all()
 Gtk.main()
