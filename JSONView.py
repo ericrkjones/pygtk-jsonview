@@ -36,6 +36,10 @@ class JSONView():
 	The 'enum' field is true for fields 'name' and 'job', indicating that, when the database is imported, sets of distinct elements will be stored in the 'set' key.  
 	"""
 
+	# class View
+	# class Filter
+	# class Details
+	
 	def __init__(self, data, headers = None, allownofilter = True):
 		"""Initialize the views.
 
@@ -49,9 +53,12 @@ class JSONView():
 		self.populateEnums()
 		self.ListStore = self.buildListStore()
 		self.View = self.buildTreeView(self.ListStore)
-		self.Filter = self.buildFilter()
-		self.Filter.show_all()
+		self.ListStoreFilter = self.ListStore.filter_new()
+		self.FilterView = self.buildFilterView()
+		self.FilterView.show_all()
 
+	
+		
 	def buildTreeView(self, store):
 		"""Create the tree view according to the header data and fill it with a list store."""
 		recordview = Gtk.TreeView(store)
@@ -109,6 +116,14 @@ class JSONView():
 						except TypeError:
 							print("Could not add elements of " + str(record[key]) + " to set of distinct values for " + key)
 
+	def packageFilterRow(self, function, key):
+		box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
+		box.add(Gtk.Label(self.headers[key]['name']))
+		box.add(function(key))
+		row = Gtk.ListBoxRow()
+		row.add(box)
+		return row
+
 	def buildBooleanChecklistFilter(self, key):
 		filterrow = Gtk.ListBox()
 		for item in ['True', 'False']:
@@ -126,22 +141,18 @@ class JSONView():
 	def buildMinMaxEntryFilter(self, key):
 		pass
 
-	def buildFilter(self):
+	def buildFilterView(self):
 		filterlist = Gtk.ListBox()
 		filterlist.set_selection_mode(Gtk.SelectionMode.NONE)
 		for key in self.headers:
 			filtertype = self.headers[key].get('filtertype')
 			if filtertype == 'booleanchecklist':
-				box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
-				box.add(Gtk.Label(self.headers[key]['name']))
-				box.add(self.buildBooleanChecklistFilter(key))
-				row = Gtk.ListBoxRow()
-				row.add(box)
-				filterlist.add(row)
+				filterlist.add(self.packageFilterRow(self.buildBooleanChecklistFilter, key))
 		return filterlist
 
 	def changeFilter(self, field, key):
 		print("Filter values changed for " + key)
+		# for key in self.Filter
 
 	def createJSONHeaders(self):
 		autodatatypes = [str, int, float, bool, dict]
@@ -194,5 +205,6 @@ class JSONView():
 					if recordtype is not None and enumerated is not None:
 						displayasstring = islist or recordtype in stringreformattypes
 						if recordtype in autodatatypes:
-							headers[key] = {'name': key, 'enum': enumerated, 'type': recordtype, 'displayasstring': displayasstring, 'islist': islist, 'viewdisplay': True, 'filterdisplay': filterdisplay, 'filtertype': filtertype}
+							headers[key] = {'name': key, 'enum': enumerated, 'type': recordtype, 'displayasstring': displayasstring, \
+											'islist': islist, 'viewdisplay': True, 'filterdisplay': filterdisplay, 'filtertype': filtertype}
 		return headers

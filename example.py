@@ -18,7 +18,7 @@ class MainWindow(Gtk.Window):
 		self.pane = Gtk.HPaned()
 		self.jsonview = JSONView(data, headers = headers)
 		self.pane.add(self.jsonview.View)
-		self.pane.add(self.jsonview.Filter)
+		self.pane.add(self.jsonview.FilterView)
 		self.pane.set_position(400)		
 		self.add(self.pane)
 
